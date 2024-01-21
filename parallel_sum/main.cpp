@@ -37,7 +37,7 @@ int main()
 	if(num_of_threads==0) num_of_threads = 2;
 	vector<thread> threads(num_of_threads-1);
 	vector<long long> sums(threads.size());
-	long long len_per_threads = NUMS_SIZE/num_of_threads;
+	long long len_per_threads = NUMS_SIZE/threads.size();
 	cout << "threads " << sums.size() << " len " << len_per_threads << endl;
 
 	clock_gettime(CLOCK_MONOTONIC, &begin_time);

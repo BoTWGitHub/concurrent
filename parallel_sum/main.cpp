@@ -9,7 +9,7 @@ using namespace std;
 
 void sumFunc(vector<int>& nums, int index, int len, long long& sum){
 	sum = 0;
-	cout << "    from " << index << " to " << min(index+len, NUMS_SIZE) << endl;
+	//cout << "    from " << index << " to " << min(index+len, NUMS_SIZE) << endl;
 	for(int i=index;i<min(index+len, NUMS_SIZE);i++) sum+=nums[i];
 }
 
@@ -37,17 +37,16 @@ int main()
 	if(num_of_threads==0) num_of_threads = 2;
 	vector<thread> threads(num_of_threads-1);
 	vector<long long> sums(threads.size());
-	long long len_per_threads = NUMS_SIZE/threads.size();
+	long long len_per_threads = NUMS_SIZE/num_of_threads;
 	cout << "threads " << sums.size() << " len " << len_per_threads << endl;
 
 	clock_gettime(CLOCK_MONOTONIC, &begin_time);
-	sum = 0;
 	for(int i=0;i<threads.size();i++){
 		threads[i] = thread(sumFunc, ref(nums), i*len_per_threads, len_per_threads, ref(sums[i]));
 	}
+	sumFunc(nums, threads.size()*len_per_threads, len_per_threads, sum);
 	for(auto& entry : threads) entry.join();
 	for(long long ret : sums) sum+=ret;
-	for(int i=threads.size()*len_per_threads;i<NUMS_SIZE;i++) sum+=nums[i];
 	clock_gettime(CLOCK_MONOTONIC, &end_time);
 	t = (end_time.tv_sec-begin_time.tv_sec) + (end_time.tv_nsec - begin_time.tv_nsec)/1000000000.0;
 	cout << "sum " << sum << " time " << t << " s" << endl;
